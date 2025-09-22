@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import styles from "./page.module.css";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-const Login = () => {
+const LoginForm = () => {
   const session = useSession();
   const router = useRouter();
   const params = useSearchParams();
@@ -88,4 +88,10 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default function Login() {
+  return (
+    <Suspense fallback={<p className={styles.loading}>Loading login...</p>}>
+      <LoginForm />
+    </Suspense>
+  );
+}
