@@ -6,20 +6,18 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-const LoginForm = () => {
+function LoginContent() {
   const session = useSession();
   const router = useRouter();
   const params = useSearchParams();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // Grab query params (error/success messages)
   useEffect(() => {
     setError(params.get("error") || "");
     setSuccess(params.get("success") || "");
   }, [params]);
 
-  // ✅ Redirect only AFTER component has rendered
   useEffect(() => {
     if (session.status === "authenticated") {
       router.push("/dashboard");
@@ -35,17 +33,17 @@ const LoginForm = () => {
     const email = e.target[0].value;
     const password = e.target[1].value;
 
-    await signIn("credentials", {
+    const res = await signIn("credentials", {
       email,
       password,
-      redirect: false, // prevent automatic redirect, handle manually
-    }).then((res) => {
-      if (res?.error) {
-        setError("Invalid email or password");
-      } else {
-        router.push("/dashboard");
-      }
+      redirect: false,
     });
+
+    if (res?.error) {
+      setError("Invalid email or password");
+    } else {
+      router.push("/dashboard");
+    }
   };
 
   return (
@@ -86,12 +84,12 @@ const LoginForm = () => {
       </Link>
     </div>
   );
-};
+}
 
 export default function Login() {
   return (
-    <Suspense fallback={<p className={styles.loading}>Loading login...</p>}>
-      <LoginForm />
+    <Suspense fallback={<p className={styles.loading}>Loading...</p>}>
+      <LoginContent />
     </Suspense>
   );
 }
