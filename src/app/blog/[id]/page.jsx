@@ -4,7 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 async function getData(id) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "";
+   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
   const res = await fetch(`${baseUrl}/api/posts/${id}`, {
     cache: "no-store",
   });
@@ -17,7 +17,8 @@ async function getData(id) {
 }
 
 export async function generateMetadata({ params }) {
-  const post = await getData(params.id);
+   const { id } = await params;   // ✅ await params
+  const post = await getData(id);
   return {
     title: post.title,
     description: post.desc,
@@ -25,8 +26,9 @@ export async function generateMetadata({ params }) {
 }
 
 const BlogPost = async ({ params }) => {
-  const data = await getData(params.id);
-
+ 
+const { id } = await params;   // ✅ await params
+  const data = await getData(id);
   return (
     <div className={styles.container}>
       <div className={styles.top}>
